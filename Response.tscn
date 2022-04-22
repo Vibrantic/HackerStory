@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Fonts/dos_font_20.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Response.gd" type="Script" id=2]
+
+[node name="Response" type="Label"]
+margin_top = 24.0
+margin_right = 1260.0
+margin_bottom = 44.0
+custom_colors/font_color = Color( 0.0784314, 0.580392, 0.0784314, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = " co: CONSOLE OUTPUT"
+script = ExtResource( 2 )
+
+[node name="Tween" type="Tween" parent="."]
