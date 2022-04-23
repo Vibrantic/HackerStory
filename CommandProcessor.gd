@@ -1,6 +1,8 @@
 extends Node
 
-var remove_char = ["[", "]", ","]
+signal response_generated(response_text)
+
+var current_ip_connected = null
 var command_list:Dictionary = {
 	0: "help - List of all commands avaliable",
 	1: "cd or chdir - Change Directory / move to a specific Folder",
@@ -24,6 +26,14 @@ var command_list:Dictionary = {
 }
 
 
+var connected_to_main = true
+var connected_to_ecotech_pc = false
+
+
+func initialize(connected_pc):
+	connect_to_ip(connected_pc)
+
+
 func process_command(input: String):
 	var words = input.split(" ", false)
 	if words.size() == 0:
@@ -33,6 +43,7 @@ func process_command(input: String):
 	var second_word = ""
 	var third_word = ""
 	var forth_word = ""
+	
 	if words.size() > 1:
 		second_word = words[1].to_lower()
 	
@@ -51,6 +62,10 @@ func process_command(input: String):
 			return clear_screen(second_word)
 		"help":
 			return help()
+		"connect":
+			return ecotech_pc(second_word)
+		"disconnect":
+			return disconnect_from_pc(first_word)
 			
 		_:
 			return "Unknown command!"
@@ -62,6 +77,45 @@ func clear_screen(second_word: String) -> String:
 	
 	return "Sucess"
 
+
+func ecotech_pc(second_word: String) -> String:
+	if second_word == "1.1.1.1" and connected_to_ecotech_pc == false:
+		connect_to_ip(current_ip_connected.connect[second_word])
+		connected_to_ecotech_pc = true
+		connected_to_main = false
+		return "Loged in to 1.1.1.1"
+	
+	elif connected_to_ecotech_pc == true:
+		return "You are alrewady connected to this IP."
+	
+	else:
+		return "Failed login!"
+
+
+func disconnect_from_pc(first_word: String) -> String:
+	if first_word == "disconnect" and connected_to_main == false:
+		connect_to_ip(current_ip_connected.disconnect[first_word])
+		connected_to_ecotech_pc = false
+		connected_to_main = true
+		return "Loged in to main PC"
+	
+	elif connected_to_main == true:
+		return "You are alrewady connected to your PC."
+		
+	else:
+		return "Failed logout!"
+	
 func help() -> String:
 	return var2str(command_list).replace("{", "").replace("}", "").replace('"', "").replace(",", "")
 	
+
+func connect_to_ip(connected_pc: NetDevices):
+	current_ip_connected = connected_pc
+	var strings = PoolStringArray([
+		"Currently connected to " + connected_pc.pc_ip,
+		"This device belongs to " + connected_pc.device_name,
+		"Processor: " + connected_pc.processor_name,
+		"Installed RAM: " + connected_pc.installed_ram,
+		"System: " + connected_pc.system_type
+	]).join("\n")
+	emit_signal("response_generated", strings)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Input.gd" type="Script" id=1]
 [ext_resource path="res://CommandProcessor.gd" type="Script" id=2]
@@ -6,6 +6,9 @@
 [ext_resource path="res://Caret.gd" type="Script" id=4]
 [ext_resource path="res://Fonts/dos_font_20.tres" type="DynamicFont" id=5]
 [ext_resource path="res://Shader/CRT.gdshader" type="Shader" id=6]
+[ext_resource path="res://PC.tscn" type="PackedScene" id=7]
+[ext_resource path="res://NetManager.gd" type="Script" id=8]
+[ext_resource path="res://CRTShader.gd" type="Script" id=9]
 
 [sub_resource type="ShaderMaterial" id=6]
 shader = ExtResource( 6 )
@@ -31,18 +34,50 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 3 )
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CRTShader" type="CanvasLayer" parent="."]
+script = ExtResource( 9 )
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+[node name="CRT_SHADER" type="TextureRect" parent="CRTShader"]
 material = SubResource( 6 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = 4.0
+mouse_filter = 2
 texture = SubResource( 7 )
 expand = true
 
 [node name="CommandProcessor" type="Node" parent="."]
 script = ExtResource( 2 )
+
+[node name="NetManager" type="Node" parent="."]
+script = ExtResource( 8 )
+
+[node name="USER_PC" parent="NetManager" instance=ExtResource( 7 )]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -591.0
+margin_top = -767.0
+margin_right = -315.0
+margin_bottom = -667.0
+rect_pivot_offset = Vector2( 6, 10 )
+pc_ip = "208.19.236.132"
+device_name = "DrMidnight-PC"
+processor_name = "Amtel F-Core 600 Mhz"
+installed_ram = "128 Kb"
+system_type = "Basis 0.5"
+
+[node name="ECOTECH_PC" parent="NetManager" instance=ExtResource( 7 )]
+margin_left = 363.0
+margin_top = -406.0
+margin_right = 639.0
+margin_bottom = -306.0
+pc_ip = "1.1.1.1"
+device_name = "ECOTECH-PC"
+processor_name = "MOS 6510, 1MHz"
+installed_ram = "64K"
+system_type = "ROM BASIC"
 
 [node name="Background" type="PanelContainer" parent="."]
 anchor_left = 0.0898438
