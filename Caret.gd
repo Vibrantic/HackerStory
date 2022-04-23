@@ -1,33 +1,32 @@
 extends Label
 
+#Normal variables
 var anim_called = false
-var anim_forward_called = false
-var anim_backward_called = false
 
+#Onready variables 
 onready var timer = $Timer
 
+
 func _ready():
-	timer.set_wait_time(1)
-	timer.start()
+	timer.set_wait_time(1) #Time is set on 1 sec
+	timer.start() #Timer is activated
 
-func ui_backward_anim() -> void:
-	$Tween.interpolate_property(
-		self, "percent_visible", 
-		1.0, 0.0, 0.0, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
-	$Tween.start()
-
-func ui_forward_anim() -> void:
-	$Tween.interpolate_property(
+# Blinking animations for user input ">>:" with the help of Tween
+func userinput_anim() -> void:
+	if anim_called == true:
+		$Tween.interpolate_property(
+			self, "percent_visible", 
+			1.0, 0.0, 0.0, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+		$Tween.start()
+		anim_called = false
+	else:
+		$Tween.interpolate_property(
 		self, "percent_visible", 
 		0.0, 1.0, 0.0, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
-	$Tween.start()
-
-	
-func _on_Timer_timeout():
-	if anim_called == false:
+		$Tween.start()
 		anim_called = true
-		ui_backward_anim()
-	elif anim_called == true:
-		anim_called = false	
-		ui_forward_anim()
+
+# This timer triggers the animation for user input
+func _on_Timer_timeout():
+	userinput_anim()
 	pass # Replace with function body.
